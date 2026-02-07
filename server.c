@@ -172,14 +172,8 @@ void unallocate_request() {
 // Return:      None
 //
 void sig_child_handler( int signal_type ) {
-
   // TODO
-
-
-
-
-
-
+  waitpid(-1, NULL, WNOHANG);
 } // end sig_child_handler() function
 
 // ------------------------------------
@@ -225,12 +219,19 @@ int run_server( unsigned int port_number ) {
 
       // TODO - create a child to handle the client request.
 
+      pid_t pid = fork();
 
-      handle_client( client_socket_fd ); // This is just place holder
-
-
+      if (pid == -1) {
+          return FAIL;
+      } else if (pid == 0) {
+          // Child process
+          printf("Child process: PID: %d, parent's PID: %d\n", getpid(), getppid());
+          handle_client( client_socket_fd );
+          return OK;
+      } else {
+          printf("Parent process: PID: %d, child PID: %d\n", getpid(), pid);
+      }
     }
-
   }
 
   return OK;
