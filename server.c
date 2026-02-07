@@ -156,6 +156,22 @@ void unallocate_request() {
 
   // TODO
 
+  // free strings
+  free(rs->url);
+  free(rs->path);
+  free(rs->query);
+  free(rs->method);
+
+  // free nodes
+  kv_pair_t* dummy = NULL;
+  while (rs->head_node != NULL){
+    dummy = rs->head_node;
+    rs->head_node = dummy->next_node;
+    free(dummy);
+  }
+
+  // free main pointer
+  free(rs);
 } // end unallocate_request() function
 
 // ------------------------------------
