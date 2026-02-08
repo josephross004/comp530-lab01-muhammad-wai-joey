@@ -462,20 +462,3 @@ int create_json( char* json_str ) {
 
 
 } // end create_json() function
-
-
-
- // if (strcmp(rs->method, post) == 0){
-  //   while (*dummy != ' '){
-  //     counter++; dummy++;
-  //   }
-
-  //   *dummy = 0;
-  //   rs->url = (char*)malloc((counter + 1) * sizeof(char));
-  //   strcpy(rs->url, http_request);
-  //   rs->path = (char*)malloc((counter + 1) * sizeof(char));
-  //   strcpy(rs->path, http_request);
-  //   http_request += counter;
-  //   http_request += 2; //crlf
-  //   counter = 0;
-  // } else{
