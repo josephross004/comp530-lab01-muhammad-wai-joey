@@ -269,11 +269,170 @@ int run_server( unsigned int port_number ) {
 //         -1 (FAIL, defined in server.h): Invalid method (e.g., not GET or POST). 
 //
 int create_request( char* http_request ) {
-  
   // TODO
+  if (http_request == NULL){
+    return FAIL;
+  }
+
+  int counter = 0;
+  rs = (request_struct *) malloc(sizeof(*rs));
+  char* dummy = http_request;
+
+  // method
+  while (*dummy != ' '){
+    counter++; dummy++;
+  }
+
+  *dummy = 0;
+  rs->method = (char*)malloc((counter + 1) * sizeof(char));
+  strcpy(rs->method, http_request);
+
+  char get[] = "GET";
+  char post[] = "POST";
+
+  if (strcmp(rs->method, get) != 0 && strcmp(rs->method, post) != 0){
+    return FAIL;
+  }
+
+  http_request += counter;
+  http_request++;
+  counter = 0;
+  dummy = http_request;
+
+  // url and path
+  bool query = false;
+  while (*dummy != ' '){
+    if (*dummy == '?'){
+      query = true;
+      int counterForQuery = counter;
+      *dummy = 0;
+      rs->path = (char*)malloc((counter + 1) * sizeof(char));
+      strcpy(rs->path, http_request);
+      *dummy = '?';
+      http_request += counter;
+      http_request++;
+      counter = 0;
+
+      // query
+      while (*dummy != ' '){
+        counter++; dummy++;
+      }
+      *dummy = 0;
+      rs->query = (char*)malloc((counter + 1) * sizeof(char));
+      strcpy(rs->query, http_request);
+
+      // backtracing url
+      http_request--;
+      http_request -= counterForQuery;
+      rs->url = (char*)malloc((counterForQuery + 1 + counter + 1) * sizeof(char));
+      strcpy(rs->url, http_request);
+      http_request += counterForQuery;
+      http_request++;
+
+      http_request += counter;
+      http_request++;
+      counter = 0;
+    }
+
+    counter++; dummy++;
+  }
+
+  // no query case
+  if (!query){
+    *dummy = 0;
+    rs->url = (char*)malloc((counter + 1) * sizeof(char));
+    strcpy(rs->url, http_request);
+    rs->path = (char*)malloc((counter + 1) * sizeof(char));
+    strcpy(rs->path, http_request);
+    http_request += counter;
+    http_request ++;
+    counter = 0;
+  }
+
+  // skipping version
+  while (*http_request != '\r'){
+    http_request++;
+  }
+  http_request += 2; //crlf
+  dummy = http_request;
+
+  // headers and body
+  counter = 0;
+  if (strcmp(rs->method, post) == 0){
+    int contentLength = 0;
+    char content_length[] = "Content-Length:";
+
+    while(*dummy != '\r'/*blank line not reached*/){
+      while (*dummy != ' '){
+        counter++; dummy++;
+      }
+      *dummy = 0;
+      char headerLine [counter + 1];
+      strcpy(headerLine, http_request);
+
+      http_request += counter;
+      http_request++;
+      dummy = http_request;
+
+      while (*dummy != '\r'){
+        counter++; dummy++;
+      }
+
+      // if it is the content length header line
+      if (strcmp(headerLine, content_length) == 0){
+        *dummy = 0;
+        char contentLengthString [counter + 1];
+        strcpy(contentLengthString, http_request);
+        contentLength = atoi(contentLengthString);
+      }
+
+      http_request += counter;
+      http_request += 2; // crlf
+      counter = 0;
+      dummy = http_request;
+    }
+    http_request += 2; // crlf
+
+    // get query from body
+    dummy += contentLength;
+    *dummy = 0;
+    rs->query = (char*)malloc((contentLength + 1) * sizeof(char));
+    strcpy(rs->query, http_request);
+  }
+
+  // handle queries and linked list
+  char* left = rs->query;
+  char* right = left;
+  rs->head_node = NULL;
+  kv_pair_t* prev = NULL;
+  kv_pair_t* curr = NULL;
+  while (*right != 0 /*while we're not at the end of quer*/){
+    right = left;
+    curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
+    if(rs->head_node == NULL){
+      rs->head_node = curr;
+    }else{ // not the first node
+      prev->next_node = curr;
+    }
+    counter = 0;
+    while (*right != '&' && *right != 0){
+      if (*right == '='){
+        *right = 0;
+        strcpy(curr->key, left);
+        left += counter;
+        left++;
+      }
+      right++; counter++;
+    }
+    // left is now at the value and right is at the end
+    *right = 0;
+    strcpy(curr->value, left);
+    left += counter;
+    left++;
+    prev = curr;
+  }
   
   return OK; // just a place holder
-
 } // end create_request() function
 
 
@@ -303,3 +462,20 @@ int create_json( char* json_str ) {
 
 
 } // end create_json() function
+
+
+
+ // if (strcmp(rs->method, post) == 0){
+  //   while (*dummy != ' '){
+  //     counter++; dummy++;
+  //   }
+
+  //   *dummy = 0;
+  //   rs->url = (char*)malloc((counter + 1) * sizeof(char));
+  //   strcpy(rs->url, http_request);
+  //   rs->path = (char*)malloc((counter + 1) * sizeof(char));
+  //   strcpy(rs->path, http_request);
+  //   http_request += counter;
+  //   http_request += 2; //crlf
+  //   counter = 0;
+  // } else{
