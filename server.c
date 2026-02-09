@@ -409,6 +409,7 @@ int create_request( char* http_request ) {
   while (*right != 0 /*while we're not at the end of quer*/){
     right = left;
     curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
+    curr->next_node = NULL;
     if(rs->head_node == NULL){
       rs->head_node = curr;
     }else{ // not the first node
@@ -419,14 +420,17 @@ int create_request( char* http_request ) {
       if (*right == '='){
         *right = 0;
         strcpy(curr->key, left);
+        *right = '=';
         left += counter;
         left++;
       }
       right++; counter++;
     }
     // left is now at the value and right is at the end
+    char x = *right;
     *right = 0;
     strcpy(curr->value, left);
+    *right = x;
     left += counter;
     left++;
     prev = curr;
@@ -456,9 +460,38 @@ int create_json( char* json_str ) {
     return FAIL;
   }
 
-  
+  int counter = 0;
 
-  return 0; // just a place holder
+  char* method = "{\"method\":\"";
+  for(int i = 0; i < strlen(method); ++i) json_str[counter++] = method[i];
+  for(int i = 0; i < strlen(rs->method); ++i) json_str[counter++] = rs->method[i];
+  
+  char* url = "\",\"url\":\"";
+  for(int i = 0; i < strlen(url); ++i) json_str[counter++] = url[i];
+  for(int i = 0; i < strlen(rs->url); ++i) json_str[counter++] = rs->url[i];
+
+  char* path = "\",\"path\":\"";
+  char* pathEnd = "\"";
+  for(int i = 0; i < strlen(path); ++i) json_str[counter++] = path[i];
+  for(int i = 0; i < strlen(rs->path); ++i) json_str[counter++] = rs->path[i];
+  for(int i = 0; i < strlen(pathEnd); ++i) json_str[counter++] = pathEnd[i];
+
+  kv_pair_t* curr = rs->head_node;
+
+  while (curr != NULL){
+    json_str[counter++] = ',';
+    json_str[counter++] = '\"';
+    for(int i = 0; i < strlen(curr->key); ++i) json_str[counter++] = curr->key[i];
+    char* inBetween = "\":\"";
+    for(int i = 0; i < strlen(inBetween); ++i) json_str[counter++] = inBetween[i];
+    for(int i = 0; i < strlen(curr->value); ++i) json_str[counter++] = curr->value[i];
+    json_str[counter++] = '\"';
+    curr = curr->next_node;
+  }
+  
+  json_str[counter++] = '}';
+  json_str[counter++] = 0;
+  return strlen(json_str); // just a place holder
 
 
 } // end create_json() function
