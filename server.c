@@ -269,7 +269,6 @@ int run_server( unsigned int port_number ) {
 //         -1 (FAIL, defined in server.h): Invalid method (e.g., not GET or POST). 
 //
 int create_request( char* http_request ) {
-  // TODO
   if (http_request == NULL){
     return FAIL;
   }
@@ -423,6 +422,7 @@ int create_request( char* http_request ) {
         *right = '=';
         left += counter;
         left++;
+        counter = -1;
       }
       right++; counter++;
     }
