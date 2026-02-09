@@ -307,7 +307,7 @@ python client.py "post" "endpoint" "user=brent&mode=debug"
 this will generate the HTTP request shown in the `POST` [example](#request-examples) and the following JSON is returned to the client.
 
 ```JSON
-{"method":"POST","url":"/endpoint?user=brent&mode=debug","path":"/endpoint","user":"brent","mode":"debug"}
+{"method":"POST","url":"/endpoint","path":"/endpoint","user":"brent","mode":"debug"}
 ````
 
 
