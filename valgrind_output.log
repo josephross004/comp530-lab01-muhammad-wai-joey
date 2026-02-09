@@ -1,0 +1,1008 @@
+\n\n\n------------------------\n
+Test case: tc1
+\n------------------------\n\n\n
+==391== Memcheck, a memory error detector
+==391== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==391== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==391== Command: ./testcase tc1
+==391== 
+==391== Invalid read of size 1
+==391==    at 0x109D47: create_request (server.c:303)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==391==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x10A770: get1 (testcase.c:138)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== Invalid read of size 1
+==391==    at 0x109BA9: create_request (server.c:304)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==391==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x10A770: get1 (testcase.c:138)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== Conditional jump or move depends on uninitialised value(s)
+==391==    at 0x109D4C: create_request (server.c:303)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== Conditional jump or move depends on uninitialised value(s)
+==391==    at 0x109BAE: create_request (server.c:304)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== Conditional jump or move depends on uninitialised value(s)
+==391==    at 0x109C54: create_request (server.c:316)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== Invalid read of size 1
+==391==    at 0x109C4F: create_request (server.c:316)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391==  Address 0x4a7832b is 0 bytes after a block of size 43 alloc'd
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109CD9: create_request (server.c:326)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 
+==391== Process terminating with default action of signal 11 (SIGSEGV)
+==391==  Access not within mapped region at address 0x4E78000
+==391==    at 0x109C4F: create_request (server.c:316)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391==  If you believe this happened as a result of a stack
+==391==  overflow in your program's main thread (unlikely but
+==391==  possible), you can try to increase the size of the
+==391==  main thread stack using the --main-stacksize= flag.
+==391==  The main thread stack size used in this run was 8388608.
+==391== 
+==391== HEAP SUMMARY:
+==391==     in use at exit: 1,055 bytes in 7 blocks
+==391==   total heap usage: 7 allocs, 0 frees, 1,055 bytes allocated
+==391== 
+==391== 4 bytes in 1 blocks are still reachable in loss record 1 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109AED: create_request (server.c:286)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 10 bytes in 1 blocks are definitely lost in loss record 2 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109BEA: create_request (server.c:308)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 33 bytes in 1 blocks are still reachable in loss record 3 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109C79: create_request (server.c:320)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 40 bytes in 1 blocks are still reachable in loss record 4 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109A95: create_request (server.c:277)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 43 bytes in 1 blocks are still reachable in loss record 5 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109CD9: create_request (server.c:326)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 256 bytes in 1 blocks are still reachable in loss record 6 of 7
+==391==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x10A770: get1 (testcase.c:138)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== 669 bytes in 1 blocks are still reachable in loss record 7 of 7
+==391==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==391==    by 0x109BEA: create_request (server.c:308)
+==391==    by 0x10A79B: get1 (testcase.c:140)
+==391==    by 0x10ACBF: main (testcase.c:291)
+==391== 
+==391== LEAK SUMMARY:
+==391==    definitely lost: 10 bytes in 1 blocks
+==391==    indirectly lost: 0 bytes in 0 blocks
+==391==      possibly lost: 0 bytes in 0 blocks
+==391==    still reachable: 1,045 bytes in 6 blocks
+==391==         suppressed: 0 bytes in 0 blocks
+==391== 
+==391== Use --track-origins=yes to see where uninitialised values come from
+==391== For lists of detected and suppressed errors, rerun with: -s
+==391== ERROR SUMMARY: 4194226 errors from 7 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc2
+\n------------------------\n\n\n
+==394== Memcheck, a memory error detector
+==394== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==394== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==394== Command: ./testcase tc2
+==394== 
+==394== Invalid read of size 1
+==394==    at 0x109D47: create_request (server.c:303)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==394==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x10A7F0: get2 (testcase.c:149)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== Invalid read of size 1
+==394==    at 0x109BA9: create_request (server.c:304)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==394==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x10A7F0: get2 (testcase.c:149)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== Conditional jump or move depends on uninitialised value(s)
+==394==    at 0x109D4C: create_request (server.c:303)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== Conditional jump or move depends on uninitialised value(s)
+==394==    at 0x109BAE: create_request (server.c:304)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== Conditional jump or move depends on uninitialised value(s)
+==394==    at 0x109C54: create_request (server.c:316)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== Invalid read of size 1
+==394==    at 0x109C4F: create_request (server.c:316)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394==  Address 0x4a7832b is 0 bytes after a block of size 43 alloc'd
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109CD9: create_request (server.c:326)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 
+==394== Process terminating with default action of signal 11 (SIGSEGV)
+==394==  Access not within mapped region at address 0x4E78000
+==394==    at 0x109C4F: create_request (server.c:316)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394==  If you believe this happened as a result of a stack
+==394==  overflow in your program's main thread (unlikely but
+==394==  possible), you can try to increase the size of the
+==394==  main thread stack using the --main-stacksize= flag.
+==394==  The main thread stack size used in this run was 8388608.
+==394== 
+==394== HEAP SUMMARY:
+==394==     in use at exit: 1,055 bytes in 7 blocks
+==394==   total heap usage: 7 allocs, 0 frees, 1,055 bytes allocated
+==394== 
+==394== 4 bytes in 1 blocks are still reachable in loss record 1 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109AED: create_request (server.c:286)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 10 bytes in 1 blocks are definitely lost in loss record 2 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109BEA: create_request (server.c:308)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 33 bytes in 1 blocks are still reachable in loss record 3 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109C79: create_request (server.c:320)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 40 bytes in 1 blocks are still reachable in loss record 4 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109A95: create_request (server.c:277)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 43 bytes in 1 blocks are still reachable in loss record 5 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109CD9: create_request (server.c:326)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 256 bytes in 1 blocks are still reachable in loss record 6 of 7
+==394==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x10A7F0: get2 (testcase.c:149)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== 669 bytes in 1 blocks are still reachable in loss record 7 of 7
+==394==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==394==    by 0x109BEA: create_request (server.c:308)
+==394==    by 0x10A81B: get2 (testcase.c:151)
+==394==    by 0x10ACBF: main (testcase.c:291)
+==394== 
+==394== LEAK SUMMARY:
+==394==    definitely lost: 10 bytes in 1 blocks
+==394==    indirectly lost: 0 bytes in 0 blocks
+==394==      possibly lost: 0 bytes in 0 blocks
+==394==    still reachable: 1,045 bytes in 6 blocks
+==394==         suppressed: 0 bytes in 0 blocks
+==394== 
+==394== Use --track-origins=yes to see where uninitialised values come from
+==394== For lists of detected and suppressed errors, rerun with: -s
+==394== ERROR SUMMARY: 4194226 errors from 7 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc3
+\n------------------------\n\n\n
+==397== Memcheck, a memory error detector
+==397== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==397== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==397== Command: ./testcase tc3
+==397== 
+==397== Use of uninitialised value of size 8
+==397==    at 0x10A2FB: create_request (server.c:419)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== Invalid read of size 1
+==397==    at 0x10A2FB: create_request (server.c:419)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==397== 
+==397== 
+==397== Process terminating with default action of signal 11 (SIGSEGV)
+==397==  Access not within mapped region at address 0x0
+==397==    at 0x10A2FB: create_request (server.c:419)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397==  If you believe this happened as a result of a stack
+==397==  overflow in your program's main thread (unlikely but
+==397==  possible), you can try to increase the size of the
+==397==  main thread stack using the --main-stacksize= flag.
+==397==  The main thread stack size used in this run was 8388608.
+==397== 
+==397== HEAP SUMMARY:
+==397==     in use at exit: 320 bytes in 5 blocks
+==397==   total heap usage: 5 allocs, 0 frees, 320 bytes allocated
+==397== 
+==397== 4 bytes in 1 blocks are still reachable in loss record 1 of 5
+==397==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==397==    by 0x109AED: create_request (server.c:286)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== 10 bytes in 1 blocks are still reachable in loss record 2 of 5
+==397==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==397==    by 0x109D87: create_request (server.c:342)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== 10 bytes in 1 blocks are still reachable in loss record 3 of 5
+==397==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==397==    by 0x109DC0: create_request (server.c:344)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== 40 bytes in 1 blocks are still reachable in loss record 4 of 5
+==397==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==397==    by 0x109A95: create_request (server.c:277)
+==397==    by 0x10A8BA: get3 (testcase.c:165)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== 256 bytes in 1 blocks are still reachable in loss record 5 of 5
+==397==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==397==    by 0x10A88F: get3 (testcase.c:163)
+==397==    by 0x10ACBF: main (testcase.c:291)
+==397== 
+==397== LEAK SUMMARY:
+==397==    definitely lost: 0 bytes in 0 blocks
+==397==    indirectly lost: 0 bytes in 0 blocks
+==397==      possibly lost: 0 bytes in 0 blocks
+==397==    still reachable: 320 bytes in 5 blocks
+==397==         suppressed: 0 bytes in 0 blocks
+==397== 
+==397== Use --track-origins=yes to see where uninitialised values come from
+==397== For lists of detected and suppressed errors, rerun with: -s
+==397== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc4
+\n------------------------\n\n\n
+==400== Memcheck, a memory error detector
+==400== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==400== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==400== Command: ./testcase tc4
+==400== 
+==400== Invalid read of size 1
+==400==    at 0x109D47: create_request (server.c:303)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==400==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x10A90F: get4 (testcase.c:174)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== Invalid read of size 1
+==400==    at 0x109BA9: create_request (server.c:304)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==400==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x10A90F: get4 (testcase.c:174)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== Conditional jump or move depends on uninitialised value(s)
+==400==    at 0x109D4C: create_request (server.c:303)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== Conditional jump or move depends on uninitialised value(s)
+==400==    at 0x109BAE: create_request (server.c:304)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== Conditional jump or move depends on uninitialised value(s)
+==400==    at 0x109C54: create_request (server.c:316)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== Invalid read of size 1
+==400==    at 0x109C4F: create_request (server.c:316)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400==  Address 0x4a782ec is 0 bytes after a block of size 12 alloc'd
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109CD9: create_request (server.c:326)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 
+==400== Process terminating with default action of signal 11 (SIGSEGV)
+==400==  Access not within mapped region at address 0x4E78000
+==400==    at 0x109C4F: create_request (server.c:316)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400==  If you believe this happened as a result of a stack
+==400==  overflow in your program's main thread (unlikely but
+==400==  possible), you can try to increase the size of the
+==400==  main thread stack using the --main-stacksize= flag.
+==400==  The main thread stack size used in this run was 8388608.
+==400== 
+==400== HEAP SUMMARY:
+==400==     in use at exit: 992 bytes in 7 blocks
+==400==   total heap usage: 7 allocs, 0 frees, 992 bytes allocated
+==400== 
+==400== 2 bytes in 1 blocks are still reachable in loss record 1 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109C79: create_request (server.c:320)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 4 bytes in 1 blocks are still reachable in loss record 2 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109AED: create_request (server.c:286)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 10 bytes in 1 blocks are definitely lost in loss record 3 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109BEA: create_request (server.c:308)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 12 bytes in 1 blocks are still reachable in loss record 4 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109CD9: create_request (server.c:326)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 40 bytes in 1 blocks are still reachable in loss record 5 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109A95: create_request (server.c:277)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 256 bytes in 1 blocks are still reachable in loss record 6 of 7
+==400==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x10A90F: get4 (testcase.c:174)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== 668 bytes in 1 blocks are still reachable in loss record 7 of 7
+==400==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==400==    by 0x109BEA: create_request (server.c:308)
+==400==    by 0x10A93A: get4 (testcase.c:176)
+==400==    by 0x10ACBF: main (testcase.c:291)
+==400== 
+==400== LEAK SUMMARY:
+==400==    definitely lost: 10 bytes in 1 blocks
+==400==    indirectly lost: 0 bytes in 0 blocks
+==400==      possibly lost: 0 bytes in 0 blocks
+==400==    still reachable: 982 bytes in 6 blocks
+==400==         suppressed: 0 bytes in 0 blocks
+==400== 
+==400== Use --track-origins=yes to see where uninitialised values come from
+==400== For lists of detected and suppressed errors, rerun with: -s
+==400== ERROR SUMMARY: 4194287 errors from 7 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc5
+\n------------------------\n\n\n
+==403== Memcheck, a memory error detector
+==403== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==403== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==403== Command: ./testcase tc5
+==403== 
+==403== Invalid read of size 1
+==403==    at 0x109D47: create_request (server.c:303)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==403==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==403==    by 0x10A9E0: get5 (testcase.c:195)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403== 
+==403== Invalid read of size 1
+==403==    at 0x109BA9: create_request (server.c:304)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==403==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==403==    by 0x10A9E0: get5 (testcase.c:195)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403== 
+==403== Conditional jump or move depends on uninitialised value(s)
+==403==    at 0x109D4C: create_request (server.c:303)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403== 
+==403== Conditional jump or move depends on uninitialised value(s)
+==403==    at 0x109BAE: create_request (server.c:304)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403== 
+==403== Invalid write of size 1
+==403==    at 0x109BCE: create_request (server.c:307)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+==403==  Address 0x4a78222 is 30 bytes before an unallocated block of size 4,193,696 in arena "client"
+==403== 
+
+valgrind: m_mallocfree.c:304 (get_bszB_as_is): Assertion 'bszB_lo == bszB_hi' failed.
+valgrind: Heap block lo/hi size mismatch: lo = 64993, hi = 0.
+This is probably caused by your program erroneously writing past the
+end of a heap block and corrupting heap metadata.  If you fix any
+invalid writes reported by Memcheck, this assertion failure will
+probably go away.  Please try that before reporting this as a bug.
+
+
+host stacktrace:
+==403==    at 0x58044A9A: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x58044BDF: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x58044D75: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x5804EFCB: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x5800525C: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x5800544D: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x5809E9C8: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==403==    by 0x580EB087: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+
+sched status:
+  running_tid=1
+
+Thread 1: status = VgTs_Runnable (lwpid 403)
+==403==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==403==    by 0x109BEA: create_request (server.c:308)
+==403==    by 0x10AA0B: get5 (testcase.c:197)
+==403==    by 0x10ACBF: main (testcase.c:291)
+client stack range: [0x1FFEFFE000 0x1FFF000FFF] client SP: 0x1FFF000030
+valgrind stack range: [0x1002CAA000 0x1002DA9FFF] top usage: 18232 of 1048576
+
+
+Note: see also the FAQ in the source distribution.
+It contains workarounds to several common problems.
+In particular, if Valgrind aborted or crashed after
+identifying problems in your program, there's a good chance
+that fixing those problems will prevent Valgrind aborting or
+crashing, especially if it happened in m_mallocfree.c.
+
+If that doesn't help, please report this bug to: www.valgrind.org
+
+In the bug report, send all the above text, the valgrind
+version, and what OS and version you are using.  Thanks.
+
+\n\n\n------------------------\n
+Test case: tc6
+\n------------------------\n\n\n
+==406== Memcheck, a memory error detector
+==406== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==406== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==406== Command: ./testcase tc6
+==406== 
+==406== Conditional jump or move depends on uninitialised value(s)
+==406==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==406==    by 0x10981B: unallocate_request (server.c:160)
+==406==    by 0x10AB02: method1 (testcase.c:225)
+==406==    by 0x10ACBF: main (testcase.c:291)
+==406== 
+==406== Conditional jump or move depends on uninitialised value(s)
+==406==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==406==    by 0x10982E: unallocate_request (server.c:161)
+==406==    by 0x10AB02: method1 (testcase.c:225)
+==406==    by 0x10ACBF: main (testcase.c:291)
+==406== 
+==406== Conditional jump or move depends on uninitialised value(s)
+==406==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==406==    by 0x109841: unallocate_request (server.c:162)
+==406==    by 0x10AB02: method1 (testcase.c:225)
+==406==    by 0x10ACBF: main (testcase.c:291)
+==406== 
+==406== Conditional jump or move depends on uninitialised value(s)
+==406==    at 0x10989E: unallocate_request (server.c:167)
+==406==    by 0x10AB02: method1 (testcase.c:225)
+==406==    by 0x10ACBF: main (testcase.c:291)
+==406== 
+==406== 
+==406== HEAP SUMMARY:
+==406==     in use at exit: 0 bytes in 0 blocks
+==406==   total heap usage: 4 allocs, 4 frees, 1,325 bytes allocated
+==406== 
+==406== All heap blocks were freed -- no leaks are possible
+==406== 
+==406== Use --track-origins=yes to see where uninitialised values come from
+==406== For lists of detected and suppressed errors, rerun with: -s
+==406== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc7
+\n------------------------\n\n\n
+==409== Memcheck, a memory error detector
+==409== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==409== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==409== Command: ./testcase tc7
+==409== 
+==409== Conditional jump or move depends on uninitialised value(s)
+==409==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==409==    by 0x10981B: unallocate_request (server.c:160)
+==409==    by 0x10AB82: method2 (testcase.c:236)
+==409==    by 0x10ACBF: main (testcase.c:291)
+==409== 
+==409== Conditional jump or move depends on uninitialised value(s)
+==409==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==409==    by 0x10982E: unallocate_request (server.c:161)
+==409==    by 0x10AB82: method2 (testcase.c:236)
+==409==    by 0x10ACBF: main (testcase.c:291)
+==409== 
+==409== Conditional jump or move depends on uninitialised value(s)
+==409==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==409==    by 0x109841: unallocate_request (server.c:162)
+==409==    by 0x10AB82: method2 (testcase.c:236)
+==409==    by 0x10ACBF: main (testcase.c:291)
+==409== 
+==409== Conditional jump or move depends on uninitialised value(s)
+==409==    at 0x10989E: unallocate_request (server.c:167)
+==409==    by 0x10AB82: method2 (testcase.c:236)
+==409==    by 0x10ACBF: main (testcase.c:291)
+==409== 
+==409== 
+==409== HEAP SUMMARY:
+==409==     in use at exit: 0 bytes in 0 blocks
+==409==   total heap usage: 4 allocs, 4 frees, 1,325 bytes allocated
+==409== 
+==409== All heap blocks were freed -- no leaks are possible
+==409== 
+==409== Use --track-origins=yes to see where uninitialised values come from
+==409== For lists of detected and suppressed errors, rerun with: -s
+==409== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc1
+\n------------------------\n\n\n
+==414== Memcheck, a memory error detector
+==414== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==414== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==414== Command: ./testcase tc1
+==414== 
+==414== Invalid read of size 1
+==414==    at 0x109D47: create_request (server.c:303)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==414==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x10A770: get1 (testcase.c:138)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== Invalid read of size 1
+==414==    at 0x109BA9: create_request (server.c:304)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==414==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x10A770: get1 (testcase.c:138)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== Conditional jump or move depends on uninitialised value(s)
+==414==    at 0x109D4C: create_request (server.c:303)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== Conditional jump or move depends on uninitialised value(s)
+==414==    at 0x109BAE: create_request (server.c:304)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== Conditional jump or move depends on uninitialised value(s)
+==414==    at 0x109C54: create_request (server.c:316)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== Invalid read of size 1
+==414==    at 0x109C4F: create_request (server.c:316)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414==  Address 0x4a7832b is 0 bytes after a block of size 43 alloc'd
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109CD9: create_request (server.c:326)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 
+==414== Process terminating with default action of signal 11 (SIGSEGV)
+==414==  Access not within mapped region at address 0x4E78000
+==414==    at 0x109C4F: create_request (server.c:316)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414==  If you believe this happened as a result of a stack
+==414==  overflow in your program's main thread (unlikely but
+==414==  possible), you can try to increase the size of the
+==414==  main thread stack using the --main-stacksize= flag.
+==414==  The main thread stack size used in this run was 8388608.
+==414== 
+==414== HEAP SUMMARY:
+==414==     in use at exit: 1,055 bytes in 7 blocks
+==414==   total heap usage: 7 allocs, 0 frees, 1,055 bytes allocated
+==414== 
+==414== 4 bytes in 1 blocks are still reachable in loss record 1 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109AED: create_request (server.c:286)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 10 bytes in 1 blocks are definitely lost in loss record 2 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109BEA: create_request (server.c:308)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 33 bytes in 1 blocks are still reachable in loss record 3 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109C79: create_request (server.c:320)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 40 bytes in 1 blocks are still reachable in loss record 4 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109A95: create_request (server.c:277)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 43 bytes in 1 blocks are still reachable in loss record 5 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109CD9: create_request (server.c:326)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 256 bytes in 1 blocks are still reachable in loss record 6 of 7
+==414==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x10A770: get1 (testcase.c:138)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== 669 bytes in 1 blocks are still reachable in loss record 7 of 7
+==414==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==414==    by 0x109BEA: create_request (server.c:308)
+==414==    by 0x10A79B: get1 (testcase.c:140)
+==414==    by 0x10ACBF: main (testcase.c:291)
+==414== 
+==414== LEAK SUMMARY:
+==414==    definitely lost: 10 bytes in 1 blocks
+==414==    indirectly lost: 0 bytes in 0 blocks
+==414==      possibly lost: 0 bytes in 0 blocks
+==414==    still reachable: 1,045 bytes in 6 blocks
+==414==         suppressed: 0 bytes in 0 blocks
+==414== 
+==414== Use --track-origins=yes to see where uninitialised values come from
+==414== For lists of detected and suppressed errors, rerun with: -s
+==414== ERROR SUMMARY: 4194226 errors from 7 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc1
+\n------------------------\n\n\n
+==432== Memcheck, a memory error detector
+==432== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==432== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==432== Command: ./testcase tc1
+==432== 
+==432== 
+==432== HEAP SUMMARY:
+==432==     in use at exit: 0 bytes in 0 blocks
+==432==   total heap usage: 8 allocs, 8 frees, 1,406 bytes allocated
+==432== 
+==432== All heap blocks were freed -- no leaks are possible
+==432== 
+==432== For lists of detected and suppressed errors, rerun with: -s
+==432== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc2
+\n------------------------\n\n\n
+==435== Memcheck, a memory error detector
+==435== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==435== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==435== Command: ./testcase tc2
+==435== 
+==435== 
+==435== HEAP SUMMARY:
+==435==     in use at exit: 0 bytes in 0 blocks
+==435==   total heap usage: 9 allocs, 9 frees, 1,946 bytes allocated
+==435== 
+==435== All heap blocks were freed -- no leaks are possible
+==435== 
+==435== For lists of detected and suppressed errors, rerun with: -s
+==435== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc3
+\n------------------------\n\n\n
+==438== Memcheck, a memory error detector
+==438== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==438== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==438== Command: ./testcase tc3
+==438== 
+==438== Use of uninitialised value of size 8
+==438==    at 0x10A317: create_request (server.c:419)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== Invalid read of size 1
+==438==    at 0x10A317: create_request (server.c:419)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==438== 
+==438== 
+==438== Process terminating with default action of signal 11 (SIGSEGV)
+==438==  Access not within mapped region at address 0x0
+==438==    at 0x10A317: create_request (server.c:419)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438==  If you believe this happened as a result of a stack
+==438==  overflow in your program's main thread (unlikely but
+==438==  possible), you can try to increase the size of the
+==438==  main thread stack using the --main-stacksize= flag.
+==438==  The main thread stack size used in this run was 8388608.
+==438== 
+==438== HEAP SUMMARY:
+==438==     in use at exit: 320 bytes in 5 blocks
+==438==   total heap usage: 5 allocs, 0 frees, 320 bytes allocated
+==438== 
+==438== 4 bytes in 1 blocks are still reachable in loss record 1 of 5
+==438==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438==    by 0x109AED: create_request (server.c:286)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== 10 bytes in 1 blocks are still reachable in loss record 2 of 5
+==438==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438==    by 0x109DA3: create_request (server.c:342)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== 10 bytes in 1 blocks are still reachable in loss record 3 of 5
+==438==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438==    by 0x109DDC: create_request (server.c:344)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== 40 bytes in 1 blocks are still reachable in loss record 4 of 5
+==438==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438==    by 0x109A95: create_request (server.c:277)
+==438==    by 0x10AC3C: get3 (testcase.c:129)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== 256 bytes in 1 blocks are still reachable in loss record 5 of 5
+==438==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438==    by 0x10AC11: get3 (testcase.c:127)
+==438==    by 0x10B041: main (testcase.c:303)
+==438== 
+==438== LEAK SUMMARY:
+==438==    definitely lost: 0 bytes in 0 blocks
+==438==    indirectly lost: 0 bytes in 0 blocks
+==438==      possibly lost: 0 bytes in 0 blocks
+==438==    still reachable: 320 bytes in 5 blocks
+==438==         suppressed: 0 bytes in 0 blocks
+==438== 
+==438== Use --track-origins=yes to see where uninitialised values come from
+==438== For lists of detected and suppressed errors, rerun with: -s
+==438== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc4
+\n------------------------\n\n\n
+==441== Memcheck, a memory error detector
+==441== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==441== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==441== Command: ./testcase tc4
+==441== 
+==441== 
+==441== HEAP SUMMARY:
+==441==     in use at exit: 0 bytes in 0 blocks
+==441==   total heap usage: 6 allocs, 6 frees, 324 bytes allocated
+==441== 
+==441== All heap blocks were freed -- no leaks are possible
+==441== 
+==441== For lists of detected and suppressed errors, rerun with: -s
+==441== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc5
+\n------------------------\n\n\n
+==444== Memcheck, a memory error detector
+==444== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==444== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==444== Command: ./testcase tc5
+==444== 
+==444== Invalid read of size 1
+==444==    at 0x109E30: create_request (server.c:352)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444==  Address 0x4a78140 is 0 bytes after a block of size 256 alloc'd
+==444==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x10AD62: get5 (testcase.c:159)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== Conditional jump or move depends on uninitialised value(s)
+==444==    at 0x109E35: create_request (server.c:352)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== Use of uninitialised value of size 8
+==444==    at 0x10A317: create_request (server.c:419)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== Invalid read of size 1
+==444==    at 0x10A317: create_request (server.c:419)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==444== 
+==444== 
+==444== Process terminating with default action of signal 11 (SIGSEGV)
+==444==  Access not within mapped region at address 0x0
+==444==    at 0x10A317: create_request (server.c:419)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444==  If you believe this happened as a result of a stack
+==444==  overflow in your program's main thread (unlikely but
+==444==  possible), you can try to increase the size of the
+==444==  main thread stack using the --main-stacksize= flag.
+==444==  The main thread stack size used in this run was 8388608.
+==444== 
+==444== HEAP SUMMARY:
+==444==     in use at exit: 322 bytes in 5 blocks
+==444==   total heap usage: 5 allocs, 0 frees, 322 bytes allocated
+==444== 
+==444== 4 bytes in 1 blocks are still reachable in loss record 1 of 5
+==444==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x109AED: create_request (server.c:286)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== 11 bytes in 1 blocks are still reachable in loss record 2 of 5
+==444==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x109DA3: create_request (server.c:342)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== 11 bytes in 1 blocks are still reachable in loss record 3 of 5
+==444==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x109DDC: create_request (server.c:344)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== 40 bytes in 1 blocks are still reachable in loss record 4 of 5
+==444==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x109A95: create_request (server.c:277)
+==444==    by 0x10AD8D: get5 (testcase.c:161)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== 256 bytes in 1 blocks are still reachable in loss record 5 of 5
+==444==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==444==    by 0x10AD62: get5 (testcase.c:159)
+==444==    by 0x10B041: main (testcase.c:303)
+==444== 
+==444== LEAK SUMMARY:
+==444==    definitely lost: 0 bytes in 0 blocks
+==444==    indirectly lost: 0 bytes in 0 blocks
+==444==      possibly lost: 0 bytes in 0 blocks
+==444==    still reachable: 322 bytes in 5 blocks
+==444==         suppressed: 0 bytes in 0 blocks
+==444== 
+==444== Use --track-origins=yes to see where uninitialised values come from
+==444== For lists of detected and suppressed errors, rerun with: -s
+==444== ERROR SUMMARY: 230 errors from 4 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc6
+\n------------------------\n\n\n
+==447== Memcheck, a memory error detector
+==447== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==447== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==447== Command: ./testcase tc6
+==447== 
+==447== Conditional jump or move depends on uninitialised value(s)
+==447==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==447==    by 0x10981B: unallocate_request (server.c:160)
+==447==    by 0x10AE84: method1 (testcase.c:189)
+==447==    by 0x10B041: main (testcase.c:303)
+==447== 
+==447== Conditional jump or move depends on uninitialised value(s)
+==447==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==447==    by 0x10982E: unallocate_request (server.c:161)
+==447==    by 0x10AE84: method1 (testcase.c:189)
+==447==    by 0x10B041: main (testcase.c:303)
+==447== 
+==447== Conditional jump or move depends on uninitialised value(s)
+==447==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==447==    by 0x109841: unallocate_request (server.c:162)
+==447==    by 0x10AE84: method1 (testcase.c:189)
+==447==    by 0x10B041: main (testcase.c:303)
+==447== 
+==447== Conditional jump or move depends on uninitialised value(s)
+==447==    at 0x10989E: unallocate_request (server.c:167)
+==447==    by 0x10AE84: method1 (testcase.c:189)
+==447==    by 0x10B041: main (testcase.c:303)
+==447== 
+==447== 
+==447== HEAP SUMMARY:
+==447==     in use at exit: 0 bytes in 0 blocks
+==447==   total heap usage: 4 allocs, 4 frees, 1,325 bytes allocated
+==447== 
+==447== All heap blocks were freed -- no leaks are possible
+==447== 
+==447== Use --track-origins=yes to see where uninitialised values come from
+==447== For lists of detected and suppressed errors, rerun with: -s
+==447== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+\n\n\n------------------------\n
+Test case: tc7
+\n------------------------\n\n\n
+==450== Memcheck, a memory error detector
+==450== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==450== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==450== Command: ./testcase tc7
+==450== 
+==450== Conditional jump or move depends on uninitialised value(s)
+==450==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==450==    by 0x10981B: unallocate_request (server.c:160)
+==450==    by 0x10AF04: method2 (testcase.c:200)
+==450==    by 0x10B041: main (testcase.c:303)
+==450== 
+==450== Conditional jump or move depends on uninitialised value(s)
+==450==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==450==    by 0x10982E: unallocate_request (server.c:161)
+==450==    by 0x10AF04: method2 (testcase.c:200)
+==450==    by 0x10B041: main (testcase.c:303)
+==450== 
+==450== Conditional jump or move depends on uninitialised value(s)
+==450==    at 0x4849845: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==450==    by 0x109841: unallocate_request (server.c:162)
+==450==    by 0x10AF04: method2 (testcase.c:200)
+==450==    by 0x10B041: main (testcase.c:303)
+==450== 
+==450== Conditional jump or move depends on uninitialised value(s)
+==450==    at 0x10989E: unallocate_request (server.c:167)
+==450==    by 0x10AF04: method2 (testcase.c:200)
+==450==    by 0x10B041: main (testcase.c:303)
+==450== 
+==450== 
+==450== HEAP SUMMARY:
+==450==     in use at exit: 0 bytes in 0 blocks
+==450==   total heap usage: 4 allocs, 4 frees, 1,325 bytes allocated
+==450== 
+==450== All heap blocks were freed -- no leaks are possible
+==450== 
+==450== Use --track-origins=yes to see where uninitialised values come from
+==450== For lists of detected and suppressed errors, rerun with: -s
+==450== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
