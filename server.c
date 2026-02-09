@@ -368,10 +368,12 @@ int create_request( char* http_request ) {
       *dummy = 0;
       char headerLine [counter + 1];
       strcpy(headerLine, http_request);
+      printf("%s\n", headerLine);
 
       http_request += counter;
       http_request++;
       dummy = http_request;
+      counter = 0;
 
       while (*dummy != '\r'){
         counter++; dummy++;
@@ -379,18 +381,27 @@ int create_request( char* http_request ) {
 
       // if it is the content length header line
       if (strcmp(headerLine, content_length) == 0){
+        printf("they're equal\n");
         *dummy = 0;
         char contentLengthString [counter + 1];
         strcpy(contentLengthString, http_request);
+        printf("%s\n", contentLengthString);
         contentLength = atoi(contentLengthString);
+        printf("%d\n", contentLength);
       }
 
       http_request += counter;
       http_request += 2; // crlf
+
+      printf("%s\n", http_request);
+
       counter = 0;
       dummy = http_request;
     }
     http_request += 2; // crlf
+    dummy = http_request;
+
+    printf("%s\n", http_request);
 
     // get query from body
     dummy += contentLength;
