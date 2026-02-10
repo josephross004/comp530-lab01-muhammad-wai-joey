@@ -50,6 +50,11 @@ int tc2() {
         printf( "Invalid HTTP request path!\n" );
         res = FAIL;
     }
+    char* json = (char*)calloc( CHUNK, sizeof( char ) );
+    create_json(json);
+    printf("%s\n", json);
+    printf("Query: %s\n", rs->query);
+    free(json);
     unallocate_request();
     free( req );
     return res;
@@ -58,8 +63,12 @@ int tc2() {
 int tc3() {
     int res = PASS;
     char* req = (char*)calloc( CHUNK, sizeof( char ) );
-    strncpy( req, "JOST /endpoint HTTP/1.1\r\nContent-Length: 26\r\n\r\nuser=brent&mode=debug&test=rizz", CHUNK-1 );
+    strncpy( req, "POST /endpoint HTTP/1.1\r\nContent-Length: 31\r\n\r\nuser=brent&mode=debug&test=rizz", CHUNK-1 );
     res = create_request( req );
+    char* json = (char*)calloc( CHUNK, sizeof( char ) );
+    create_json(json);
+    printf("%s\n", json);
+    printf("Query: %s\n", rs->query);
     if ( res == FAIL ) printf( "Invalid HTTP request\n" );
     unallocate_request();
     free( req );
