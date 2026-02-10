@@ -278,7 +278,7 @@ int create_request( char* http_request ) {
   char* dummy = http_request;
 
   // method
-  while (*dummy != ' '){
+  while (*dummy != '\0' && *dummy != ' '){
     counter++; dummy++;
   }
 
@@ -300,7 +300,7 @@ int create_request( char* http_request ) {
 
   // url and path
   bool query = false;
-  while (*dummy != ' '){
+  while (*dummy!= '\0' && *dummy != ' '){
     if (*dummy == '?'){
       query = true;
       int counterForQuery = counter;
@@ -313,7 +313,7 @@ int create_request( char* http_request ) {
       counter = 0;
 
       // query
-      while (*dummy != ' '){
+      while (*dummy!= '\0' && *dummy != ' '){
         counter++; dummy++;
       }
       *dummy = 0;
