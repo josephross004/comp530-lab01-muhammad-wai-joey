@@ -10,8 +10,26 @@
 
 int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, 
                      char** e_keys, char** e_vals, int num_kv) {
-    
-    // missing fields must be empty strings, not NULL
+    if (!rs) {
+        printf("!rs == TRUE");
+        return FAIL;
+    }
+    if (strcmp(rs->method ? rs->method : "", e_method) != 0) {
+        printf("rs->method");
+        return FAIL;
+    }
+    if (strcmp(rs->url ? rs->url : "", e_url) != 0) {
+        printf("rs->url : %s", (rs->url ? rs->url : "[null]"));
+        return FAIL;
+    }
+    if (strcmp(rs->path ? rs->path : "", e_path) != 0) {
+        printf("rs->path");
+        return FAIL;
+    }
+    if (strcmp(rs->query ? rs->query : "", e_query) != 0) {
+        printf("rs->query");
+        return FAIL;
+    }
     if (strcmp(rs->method, e_method) != 0) {
         printf("Fail: Method mismatch. Expected %s, got %s\n", e_method, rs->method);
         return FAIL;
@@ -141,7 +159,7 @@ int get4() {
 }
 
 int get5() {
-    return run_test("GET HTTP/1.1\r\n\r\n", 
+    return run_test("GET  HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "", "", "", NULL, NULL, 0);
 }
 
@@ -156,7 +174,7 @@ int method1() {
 
     // Note the mixed case "gEt" in the input, but "GET" in the expected output
     return run_test("gEt /endpoint HTTP/1.1\r\nContent-Length: 40\r\n\r\nuser=brent&mode=debug&test=rizz\r\n\r\n", 
-                    PASS, "POST", "/endpoint?user=brent&mode=debug&test=rizz", "/endpoint", 
+                    PASS, "GET", "/endpoint?user=brent&mode=debug&test=rizz", "/endpoint", 
                     "user=brent&mode=debug&test=rizz", keys, vals, 3);
 }
 

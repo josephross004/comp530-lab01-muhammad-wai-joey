@@ -188,8 +188,21 @@ void unallocate_request() {
 // Return:      None
 //
 void sig_child_handler( int signal_type ) {
-  // TODO
-  waitpid(-1, NULL, WNOHANG);
+  
+
+  if (signal_type == SIGCHLD) {
+    // Reap all available children
+    while (waitpid(-1, NULL, WNOHANG) > 0) { /* keep on reaping! */ }
+    return;
+  }
+
+  // Graceful shutdown: close the listening socket so accept() unblocks and don't lose allocated bytes
+  if ((signal_type == SIGTERM || signal_type == SIGINT) && server_socket_fd > 0) {
+    close(server_socket_fd);
+    server_socket_fd = -1;
+  }
+
+
 } // end sig_child_handler() function
 
 // ------------------------------------
@@ -224,6 +237,8 @@ int run_server( unsigned int port_number ) {
     return FAIL;
 
   } else {
+    signal(SIGTERM, sig_child_handler);
+    signal(SIGINT, sig_child_handler);
 
     printf("server_socket_fd = %d\n", server_socket_fd );
 
@@ -246,6 +261,7 @@ int run_server( unsigned int port_number ) {
           return OK;
       } else {
           printf("Parent process: PID: %d, child PID: %d\n", getpid(), pid);
+          close(client_socket_fd);
       }
     }
   }
@@ -275,6 +291,11 @@ int create_request( char* http_request ) {
 
   int counter = 0;
   rs = (request_struct *) malloc(sizeof(*rs));
+
+  // init rs to be null pointers and null objects
+  rs->method = rs->url = rs->path = rs->query = NULL;
+  rs->head_node = NULL;
+
   char* dummy = http_request;
 
   // method
@@ -282,17 +303,25 @@ int create_request( char* http_request ) {
     counter++; dummy++;
   }
 
+  // At this point in the code, counter now has the length of the request up to the first space 
+  // (or to the end of the string.) This represents the METHOD. 
+
+  // Make it so that *dummy assigns the end of http_request to 0
   *dummy = 0;
+
+  // Then copy everything up until the NULL terminator into the method field. 
   rs->method = (char*)malloc((counter + 1) * sizeof(char));
   strcpy(rs->method, http_request);
 
   char get[] = "GET";
   char post[] = "POST";
 
+  // Fail if neither GET nor POST is invoked.
   if (strcmp(rs->method, get) != 0 && strcmp(rs->method, post) != 0){
     return FAIL;
   }
 
+  // Go to the next character after the "/0"
   http_request += counter;
   http_request++;
   counter = 0;
@@ -300,53 +329,44 @@ int create_request( char* http_request ) {
 
   // url and path
   bool query = false;
+
   while (*dummy!= '\0' && *dummy != ' '){
-    if (*dummy == '?'){
-      query = true;
-      int counterForQuery = counter;
-      *dummy = 0;
-      rs->path = (char*)malloc((counter + 1) * sizeof(char));
-      strcpy(rs->path, http_request);
-      *dummy = '?';
-      http_request += counter;
-      http_request++;
-      counter = 0;
-
-      // query
-      while (*dummy!= '\0' && *dummy != ' '){
-        counter++; dummy++;
-      }
-      *dummy = 0;
-      rs->query = (char*)malloc((counter + 1) * sizeof(char));
-      strcpy(rs->query, http_request);
-
-      // backtracing url
-      http_request--;
-      http_request -= counterForQuery;
-      rs->url = (char*)malloc((counterForQuery + 1 + counter + 1) * sizeof(char));
-      strcpy(rs->url, http_request);
-      http_request += counterForQuery;
-      http_request++;
-
-      http_request += counter;
-      http_request++;
-      counter = 0;
+    // In the event that the dummy picks up on '?' then there is a query. 
+    if (*dummy == '?') {
+      query=true;  
     }
-
-    counter++; dummy++;
+    dummy++; 
   }
 
-  // no query case
-  if (!query){
-    *dummy = 0;
-    rs->url = (char*)malloc((counter + 1) * sizeof(char));
-    strcpy(rs->url, http_request);
-    rs->path = (char*)malloc((counter + 1) * sizeof(char));
-    strcpy(rs->path, http_request);
-    http_request += counter;
-    http_request ++;
-    counter = 0;
+  // Now calculate the total length and capture rs->url
+  int url_len = dummy - http_request;
+  rs->url = (char*)malloc(url_len + 1);
+  strncpy(rs->url, http_request, url_len);
+  rs->url[url_len] = '\0';
+
+  // Split rs->url into PATH and QUERY
+  if (query) {
+    // search for '?' built into string.h
+    char* qmark = strchr(rs->url, '?');
+    int path_len = qmark - rs->url;
+
+    rs->path = (char*)malloc(path_len + 1);
+    strncpy(rs->path, rs->url, path_len);
+    rs->path[path_len] = '\0';
+
+    rs->query = strdup(qmark + 1);
+  } else {
+    // null query case - no ? found
+    rs->path = strdup(rs->url);
+    rs->query = strdup("");
   }
+  
+  // and update the pointer again for the next part: 
+  http_request = dummy;
+
+  // CHECK: did we get the URL and path? 
+  printf("rs->url : %s\n", rs->url);
+  printf("rs->path : %s\n", rs->path);
 
   // skipping version
   while (*http_request != '\r'){
@@ -357,95 +377,84 @@ int create_request( char* http_request ) {
 
   // headers and body
   counter = 0;
-  if (strcmp(rs->method, post) == 0){
+
+  // This part only applies to POST requests. 
+  if (strcmp(rs->method, "POST") == 0) {
     int contentLength = 0;
-    char content_length[] = "Content-Length:";
-
-    while(*dummy != '\r'/*blank line not reached*/){
-      while (*dummy != ' '){
-        counter++; dummy++;
-      }
-      *dummy = 0;
-      char headerLine [counter + 1];
-      strcpy(headerLine, http_request);
-      printf("%s\n", headerLine);
-
-      http_request += counter;
-      http_request++;
-      dummy = http_request;
-      counter = 0;
-
-      while (*dummy != '\r'){
-        counter++; dummy++;
-      }
-
-      // if it is the content length header line
-      if (strcmp(headerLine, content_length) == 0){
-        printf("they're equal\n");
-        *dummy = 0;
-        char contentLengthString [counter + 1];
-        strcpy(contentLengthString, http_request);
-        printf("%s\n", contentLengthString);
-        contentLength = atoi(contentLengthString);
-        printf("%d\n", contentLength);
-      }
-
-      http_request += counter;
-      http_request += 2; // crlf
-
-      printf("%s\n", http_request);
-
-      counter = 0;
-      dummy = http_request;
+    
+    // 1. Scan headers for Content-Length
+    while (*dummy != '\r') {
+        if (strncasecmp(dummy, "Content-Length:", 15) == 0) {
+            char* val_start = strchr(dummy, ' ') + 1;
+            contentLength = atoi(val_start);
+        }
+        // Move to next line
+        while (*dummy != '\n') dummy++;
+        dummy++;
     }
-    http_request += 2; // crlf
-    dummy = http_request;
-
-    printf("%s\n", http_request);
-
-    // get query from body
-    dummy += contentLength;
-    *dummy = 0;
-    rs->query = (char*)malloc((contentLength + 1) * sizeof(char));
-    strcpy(rs->query, http_request);
+    
+    // 2. Skip the blank line (\r\n) to get to the body
+    dummy += 2; 
+    
+    // 3. NOW allocate and copy
+    rs->query = (char*)malloc(contentLength + 1);
+    memcpy(rs->query, dummy, contentLength);
+    rs->query[contentLength] = '\0';
   }
 
+
+  // need to not run the query-key-value loop if query is null
+  // Only parse if query exists and is not an empty string
+  if (rs->query != NULL && rs->query[0] != '\0'){
+    char* left = rs->query;
+    rs->head_node = NULL;
+    kv_pair_t* prev = NULL;
+    kv_pair_t* curr = NULL;
+
+    while (*left != '\0'){
+      // Find delimiters
+      char* eq = strchr(left, '=');
+      char* amp = strchr(left, '&');
+
+      // Validation: Skip malformed entries like "key=" or "=value"
+      if (eq == NULL || eq == left || *(eq + 1) == '\0' || *(eq + 1) == '&') {
+          if (amp) { left = amp + 1; continue; }
+          else break;
+      }
+
+      curr = (kv_pair_t *) malloc(sizeof(kv_pair_t));
+      curr->next_node = NULL;
+
+      // 1. Copy Key: snip at '=', copy, then restore '='
+      *eq = '\0';
+      strcpy(curr->key, left); 
+      *eq = '=';
+
+      // 2. Copy Value: snip at '&' if it exists
+      left = eq + 1; 
+      if (amp) {
+        *amp = '\0';
+        strcpy(curr->value, left);
+        *amp = '&'; // Restore '&' for the rest of the string
+        left = amp + 1; // Move 'left' to the start of the next pair
+      } else {
+        // This is the last value in the string
+        strcpy(curr->value, left);
+        left += strlen(left); // Terminates the while loop
+      }
+
+      // 3. Link the node
+      if(rs->head_node == NULL) {
+        rs->head_node = curr;
+      } else {
+        prev->next_node = curr;
+      }
+      prev = curr;
+    }
+  }
   // handle queries and linked list
-  char* left = rs->query;
-  char* right = left;
-  rs->head_node = NULL;
-  kv_pair_t* prev = NULL;
-  kv_pair_t* curr = NULL;
-  while (*right != 0 /*while we're not at the end of quer*/){
-    right = left;
-    curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
-    curr->next_node = NULL;
-    if(rs->head_node == NULL){
-      rs->head_node = curr;
-    }else{ // not the first node
-      prev->next_node = curr;
-    }
-    counter = 0;
-    while (*right != '&' && *right != 0){
-      if (*right == '='){
-        *right = 0;
-        strcpy(curr->key, left);
-        *right = '=';
-        left += counter;
-        left++;
-        counter = -1;
-      }
-      right++; counter++;
-    }
-    // left is now at the value and right is at the end
-    char x = *right;
-    *right = 0;
-    strcpy(curr->value, left);
-    *right = x;
-    left += counter;
-    left++;
-    prev = curr;
-  }
+  
+  //Special edge case: when '?' at the end of rs->url and rs->query is strlen
   
   return OK; // just a place holder
 } // end create_request() function
