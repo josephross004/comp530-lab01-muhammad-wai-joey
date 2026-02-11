@@ -423,7 +423,7 @@ int create_request( char* http_request ) {
 
     // get query from body
     counter = 0;
-    while (*dummy != 0 && counter < content_length) {
+    while (*dummy != 0 && counter < contentLength) {
       dummy++; counter++;
     }
     *dummy = 0;
