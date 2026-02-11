@@ -275,6 +275,11 @@ int create_request( char* http_request ) {
 
   int counter = 0;
   rs = (request_struct *) malloc(sizeof(*rs));
+  rs->method = NULL;
+  rs->url = NULL;
+  rs->path = NULL;
+  rs->query = NULL;
+  rs->head_node = NULL;
   char* dummy = http_request;
 
   // method
@@ -336,8 +341,11 @@ int create_request( char* http_request ) {
     counter++; dummy++;
   }
 
+  printf("entering no query case\n");
+
   // no query case
   if (!query){
+    printf("in no query case\n");
     *dummy = 0;
     rs->url = (char*)malloc((counter + 1) * sizeof(char));
     strcpy(rs->url, http_request);
@@ -348,12 +356,22 @@ int create_request( char* http_request ) {
     counter = 0;
   }
 
+  printf("finished no query case\n");
+
   // skipping version
   while (*http_request != '\r'){
     http_request++;
   }
   http_request += 2; //crlf
   dummy = http_request;
+
+  printf("skipped version\n");
+
+  if (rs->query == NULL){
+    printf("no query\n");
+    rs->query = (char*)malloc((1) * sizeof(char));
+    strcpy(rs->query, "");
+  }
 
   // headers and body
   counter = 0;
@@ -411,40 +429,66 @@ int create_request( char* http_request ) {
   }
 
   // handle queries and linked list
-  char* left = rs->query;
-  char* right = left;
-  rs->head_node = NULL;
-  kv_pair_t* prev = NULL;
-  kv_pair_t* curr = NULL;
-  while (*right != 0 /*while we're not at the end of quer*/){
-    right = left;
-    curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
-    curr->next_node = NULL;
-    if(rs->head_node == NULL){
-      rs->head_node = curr;
-    }else{ // not the first node
-      prev->next_node = curr;
-    }
-    counter = 0;
-    while (*right != '&' && *right != 0){
-      if (*right == '='){
-        *right = 0;
-        strcpy(curr->key, left);
-        *right = '=';
-        left += counter;
-        left++;
-        counter = -1;
+  if (rs->query != NULL){
+    char* left = rs->query;
+    char* right = left;
+    rs->head_node = NULL;
+    kv_pair_t* prev = NULL;
+    kv_pair_t* curr = NULL;
+    while (*right != 0 /*while we're not at the end of quer*/){
+      right = left;
+      curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
+      curr->next_node = NULL;
+      if(rs->head_node == NULL){
+        rs->head_node = curr;
+      }else{ // not the first node
+        prev->next_node = curr;
       }
-      right++; counter++;
+      counter = 0;
+      while (*right != '&' && *right != 0){
+        if (*right == '='){
+          *right = 0;
+          strcpy(curr->key, left);
+          *right = '=';
+          left += counter;
+          left++;
+          counter = -1;
+        }
+        right++; counter++;
+      }
+      // left is now at the value and right is at the end
+      char x = *right;
+      *right = 0;
+      strcpy(curr->value, left);
+      *right = x;
+      left += counter;
+      left++;
+
+      if (strcmp(curr->key, "") == 0 || strcmp(curr->value, "") == 0){
+        if (rs->head_node == curr){
+          rs->head_node = NULL;
+        }
+        free(curr);
+        curr = prev;
+        if (curr != NULL){
+          curr->next_node = NULL;
+        }
+      }
+      prev = curr;
     }
-    // left is now at the value and right is at the end
-    char x = *right;
-    *right = 0;
-    strcpy(curr->value, left);
-    *right = x;
-    left += counter;
-    left++;
-    prev = curr;
+  }
+
+  printf("method: %s\n", rs->method);
+  printf("url: %s\n", rs->url);
+  printf("path: %s\n", rs->path);
+  printf("query: %s\n", rs->query);
+  kv_pair_t* curr = rs->head_node;
+  counter = 0;
+  while (curr != NULL){
+    printf("node: %d\n", counter++);
+    printf("key: %s\n", curr->key);
+    printf("value: %s\n", curr->value);
+    curr = curr->next_node;
   }
   
   return OK; // just a place holder
