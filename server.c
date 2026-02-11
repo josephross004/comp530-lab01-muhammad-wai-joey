@@ -423,12 +423,12 @@ int create_request( char* http_request ) {
 
     // get query from body
     counter = 0;
-    while (*dummy != 0 && counter < contentLength) {
+    while (counter < contentLength && *dummy != 0) {
       dummy++; counter++;
     }
-    *dummy = 0;
     rs->query = (char*)malloc((contentLength + 1) * sizeof(char));
-    strcpy(rs->query, http_request);
+    strncpy(rs->query, http_request, counter);
+    rs->query[counter] = 0;
   }
 
   // handle queries and linked list
