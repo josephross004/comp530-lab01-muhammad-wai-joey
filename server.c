@@ -379,8 +379,8 @@ int create_request( char* http_request ) {
     int contentLength = 0;
     char content_length[] = "Content-Length:";
 
-    while(*dummy != '\r'/*blank line not reached*/){
-      while (*dummy != ' '){
+    while(*dummy!= '\0' && *dummy != '\r'/*blank line not reached*/){
+      while (*dummy!= '\0' && *dummy != ' '){
         counter++; dummy++;
       }
       *dummy = 0;
@@ -422,7 +422,10 @@ int create_request( char* http_request ) {
     printf("%s\n", http_request);
 
     // get query from body
-    dummy += contentLength;
+    counter = 0;
+    while (*dummy != 0 && counter < content_length) {
+      dummy++; counter++;
+    }
     *dummy = 0;
     rs->query = (char*)malloc((contentLength + 1) * sizeof(char));
     strcpy(rs->query, http_request);
