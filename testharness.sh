@@ -47,7 +47,7 @@ done
 
 # Process reaping
 #     1. Write a test in testharness.sh that starts the srever in the background and captures the parent PID
-#     2. Send multiple client requests (5, 10, 20?) triggering a fork() in the server and the child handles the client 
+#     2. Send multiple client requests (decided on 50) triggering a fork() in the server and the child handles the client 
 #         and then the child has to exit. 
 #     3. Check /proc for zombies - locate children of parent PID and if there are ANY zombies (ANY!!) return FAIL
 #     4. Clean server shutdown. ^C should be a clean exit with no lingering children. 
