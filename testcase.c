@@ -8,8 +8,7 @@
 // -----------------------------------
 
 
-int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, 
-                     char** e_keys, char** e_vals, int num_kv) {
+int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, char** e_keys, char** e_vals, int num_kv) {
     
     // missing fields must be empty strings, not NULL
     if (strcmp(rs->method, e_method) != 0) {
@@ -62,8 +61,7 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query,
 
 
 // Helper function to run a single test case (boilerplate code)
-int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, 
-             char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
+int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
     int res = PASS;
     char* req = (char*)calloc(CHUNK, sizeof(char));
     strncpy(req, req_str, CHUNK - 1);
