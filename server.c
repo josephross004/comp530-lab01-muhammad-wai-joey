@@ -188,8 +188,13 @@ void unallocate_request() {
 // Return:      None
 //
 void sig_child_handler( int signal_type ) {
-  // TODO
-  waitpid(-1, NULL, WNOHANG);
+  
+  while (waitpid(-1, NULL, WNOHANG) > 0 ) {
+    // keep on reaping - two SIGCHILD and two child 
+    // processes exiting at the same time doesn't get captured
+    // without this empty while loop conditional on 
+    // waitpid giving something besides 0
+  };
 } // end sig_child_handler() function
 
 // ------------------------------------
@@ -210,7 +215,9 @@ void sig_child_handler( int signal_type ) {
 //             -1 (FAIL, defined in server.h): Fork error.
 //
 int run_server( unsigned int port_number ) {
-
+  // Stop Valgrind from seeing the print buffer as a problem 
+  setvbuf(stdout, NULL, _IONBF, 0);
+  
   int client_socket_fd = NONE;
 
   struct sockaddr_in client_address;
@@ -246,6 +253,7 @@ int run_server( unsigned int port_number ) {
           return OK;
       } else {
           printf("Parent process: PID: %d, child PID: %d\n", getpid(), pid);
+          close(client_socket_fd);
       }
     }
   }
@@ -341,11 +349,11 @@ int create_request( char* http_request ) {
     counter++; dummy++;
   }
 
-  printf("entering no query case\n");
+  //printf("entering no query case\n");
 
   // no query case
   if (!query){
-    printf("in no query case\n");
+    //printf("in no query case\n");
     *dummy = 0;
     rs->url = (char*)malloc((counter + 1) * sizeof(char));
     strcpy(rs->url, http_request);
@@ -356,7 +364,7 @@ int create_request( char* http_request ) {
     counter = 0;
   }
 
-  printf("finished no query case\n");
+  //printf("finished no query case\n");
 
   // skipping version
   while (*http_request != '\r'){
@@ -365,10 +373,10 @@ int create_request( char* http_request ) {
   http_request += 2; //crlf
   dummy = http_request;
 
-  printf("skipped version\n");
+  //printf("skipped version\n");
 
   if (rs->query == NULL){
-    printf("no query\n");
+    //printf("no query\n");
     rs->query = (char*)malloc((1) * sizeof(char));
     strcpy(rs->query, "");
   }
@@ -386,7 +394,7 @@ int create_request( char* http_request ) {
       *dummy = 0;
       char headerLine [counter + 1];
       strcpy(headerLine, http_request);
-      printf("%s\n", headerLine);
+      //printf("%s\n", headerLine);
 
       http_request += counter;
       http_request++;
@@ -399,19 +407,19 @@ int create_request( char* http_request ) {
 
       // if it is the content length header line
       if (strcmp(headerLine, content_length) == 0){
-        printf("they're equal\n");
+        //printf("they're equal\n");
         *dummy = 0;
         char contentLengthString [counter + 1];
         strcpy(contentLengthString, http_request);
-        printf("%s\n", contentLengthString);
+        //printf("%s\n", contentLengthString);
         contentLength = atoi(contentLengthString);
-        printf("%d\n", contentLength);
+        //printf("%d\n", contentLength);
       }
 
       http_request += counter;
       http_request += 2; // crlf
 
-      printf("%s\n", http_request);
+      //printf("%s\n", http_request);
 
       counter = 0;
       dummy = http_request;
@@ -419,14 +427,26 @@ int create_request( char* http_request ) {
     http_request += 2; // crlf
     dummy = http_request;
 
-    printf("%s\n", http_request);
+    //printf("%s\n", http_request);
 
     // get query from body
     counter = 0;
     while (counter < contentLength && *dummy != 0) {
       dummy++; counter++;
     }
-    rs->query = (char*)malloc((contentLength + 1) * sizeof(char));
+    // realloc query 
+    // since query is already allocated and needs to
+    // be of a different (?) size
+    
+    
+    char* temp = (char*)realloc(rs->query, (contentLength + 1) * sizeof(char));
+    // have to play it safe in case the machine runs out of memory. 
+    if (temp == NULL){
+      fprintf(stderr, "Failed to reallocate memory\n");
+    } else {
+      rs->query = temp;
+    }
+
     strncpy(rs->query, http_request, counter);
     rs->query[counter] = 0;
   }
@@ -440,7 +460,7 @@ int create_request( char* http_request ) {
     kv_pair_t* curr = NULL;
     while (*right != 0 /*while we're not at the end of quer*/){
       right = left;
-      curr = (kv_pair_t *) malloc(sizeof(*rs->head_node));
+      curr = (kv_pair_t *) calloc (1, sizeof(kv_pair_t));
       curr->next_node = NULL;
       if(rs->head_node == NULL){
         rs->head_node = curr;
@@ -481,16 +501,16 @@ int create_request( char* http_request ) {
     }
   }
 
-  printf("method: %s\n", rs->method);
-  printf("url: %s\n", rs->url);
-  printf("path: %s\n", rs->path);
-  printf("query: %s\n", rs->query);
+  //printf("method: %s\n", rs->method);
+  //printf("url: %s\n", rs->url);
+  //printf("path: %s\n", rs->path);
+  //printf("query: %s\n", rs->query);
   kv_pair_t* curr = rs->head_node;
   counter = 0;
   while (curr != NULL){
-    printf("node: %d\n", counter++);
-    printf("key: %s\n", curr->key);
-    printf("value: %s\n", curr->value);
+    //printf("node: %d\n", counter++);
+    //printf("key: %s\n", curr->key);
+    //printf("value: %s\n", curr->value);
     curr = curr->next_node;
   }
   
