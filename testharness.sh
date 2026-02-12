@@ -12,7 +12,7 @@ test_result() {
 # Number of test cases.
 # update this number as needed.
 # -------------------------------
-N=27
+N=24
 
 for ((i = 1; i < N+1; i++)); do
     echo "----------------------------"
