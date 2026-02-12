@@ -215,9 +215,8 @@ void sig_child_handler( int signal_type ) {
 //             -1 (FAIL, defined in server.h): Fork error.
 //
 int run_server( unsigned int port_number ) {
-  // Stop Valgrind from seeing the print buffer as a problem 
-  setvbuf(stdout, NULL, _IONBF, 0);
-  
+
+
   int client_socket_fd = NONE;
 
   struct sockaddr_in client_address;

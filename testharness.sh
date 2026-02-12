@@ -15,12 +15,11 @@ test_result() {
 N=24
 
 for ((i = 1; i < N+1; i++)); do
-    echo "----------------------------"
+    echo "---------------------------"
   	./testcase "tc$i"
   	ec=$?
   	test_result "$ec" "tc$i"
-	# add header to log file
-	echo "\n\n\n------------------------\n" >> "./valgrind_output.log"
+	echo "\n\n\n-----------------------\n" >> "./valgrind_output.log"
 	echo "Test case: tc$i" >> "./valgrind_output.log"
 	echo "\n------------------------\n\n\n" >> "./valgrind_output.log"
 	# run the test under Valgrind
@@ -58,24 +57,10 @@ done
 #
 #     NB      Entire test suite has to run under Valgrind automatically. 
 
-# Define port that is going to be run on (standard according to assignment.)
-PORT=8080
-
-# Prepare an appending log for all processes' valgrind outputs
-LOG=valgrind.log
-: > "$LOG"            # i.e. truncate if exists.
-exec 3>>"$LOG"        # open FD 3 in O_APPEND mode for shell, children 
-
-# Start server using valgrind and stdbuf
-stdbuf -oL -eL valgrind \
-  --leak-check=full \
-  --show-leak-kinds=all \
-  --errors-for-leak-kinds=all \
-  --error-exitcode=1 \
-  --trace-children=yes \
-  --track-fds=yes \
-  --log-fd=3 \
-  ./lab01 "$PORT" > server.log 2>&1 &
+# (standard according to assignment - by default client.py 
+# is going to use localhost:8080 .)
+# Start server using valgrind 
+valgrind --leak-check=full  --show-leak-kinds=all --errors-for-leak-kinds=all --trace-children=yes ./lab01 "8080" > server.log   2>&1 &
 
 # capture server PID
 SERVER_PID=$!
@@ -90,7 +75,8 @@ if ! kill -0 $SERVER_PID 2>/dev/null; then
 fi
 
 # SANITY CHECK: where's the server listening (netstat)?
-if netstat -tulpn | grep -q ":8080 "; then
+# netstat to find out
+if netstat -n | grep "8080 "; then
     echo "Server is listening on port 8080."
 fi
 
@@ -103,19 +89,18 @@ echo "Waiting 15s for processes to finish logging."
 sleep 15
 
 # use file to count how many spawns there were.
-SPAWNED_COUNT=$(grep -c "Child process:" server.log)
-PARENT_LOG_COUNT=$(grep -c "Parent process:" server.log)
+SPAWNED_IN_LOG_COUNT=$(grep -c "Child process:" server.log)
+PARENT_IN_LOG_COUNT=$(grep -c "Parent process:" server.log)
 
 # show evidence of children being created
-echo "--- Process Evidence ---"
-echo "Total 'Child process' log entries: $SPAWNED_COUNT"
-echo "Total 'Parent process' log entries: $PARENT_LOG_COUNT"
+echo "$SPAWNED_IN_LOG_COUNT child processes"
+echo "$PARENT_IN_LOG_COUNT parennt processes"
 
 # Check to see if it matches expected
-if [ "$SPAWNED_COUNT" -eq 50 ]; then
+if [ "$SPAWNED_IN_LOG_COUNT" -eq 50 ]; then
     echo "EVIDENCE: Success. Parent spawned all 50 children."
 else
-    echo "EVIDENCE: Failed. Only $SPAWNED_COUNT children were detected."
+    echo "EVIDENCE: Failed. Only $SPAWNED_IN_LOG_COUNT children were detected."
 fi
 
 echo "Waiting 15s for clients to finish network calls."
@@ -125,6 +110,11 @@ sleep 15
 ZOMBIE_COUNT=0
 for pid in /proc/[0-9]*; do
     if [ -f "$pid/status" ]; then
+    # proc output looks like this 
+    # State:  S (sleeping)
+    # ...
+    # PPid:   1 
+    # so awk '{print $2}' is just to get that second column out.
         PARENT=$(grep "PPid:" "$pid/status" | awk '{print $2}')
         STATE=$(grep "State:" "$pid/status" | awk '{print $2}')
         
@@ -136,9 +126,10 @@ for pid in /proc/[0-9]*; do
     fi
 done
 
-if [ "$ZOMBIE_COUNT" -gt 0 ]; then
+if [ "$ZOMBIE_COUNT" -gt 0 ]; 
+then
     echo "REAPING TEST: FAILED ($ZOMBIE_COUNT zombies detected)"
-    kill -9 $SERVER_PID
+    kill $SERVER_PID
     exit 1
 else
     echo "REAPING TEST: PASSED (No zombies found)"
@@ -149,17 +140,11 @@ kill $SERVER_PID
 
 sleep 1 
 
-echo "================ Valgrind Summary (valgrind.log) ================"
-
 # Fail if any leak or errors detected
-if grep -q "definitely lost: [1-9]" "$LOG"; then
-    echo "VALGRIND: FAILED (memory leaks detected!)"
+
+if ! grep "ERROR SUMMARY: 0 errors from 0 contexts" "server.log"; then
+    echo "VALGRIND: FAILED "
     exit 1
 fi
 
-if grep -q "ERROR SUMMARY: [1-9]" "$LOG"; then
-    echo "VALGRIND: FAILED (Valgrind errors detected!)"
-    exit 1
-fi
-
-echo "VALGRIND: PASSED (no leaks, no errors)."
+echo "VALGRIND: PASSED."

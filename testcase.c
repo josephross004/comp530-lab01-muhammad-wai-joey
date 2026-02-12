@@ -47,7 +47,6 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query,
     }
 
     // final Integrity Checks
-    // Per policy:  query is missing, head_node = NULL
     if (num_kv == 0 && rs->head_node != NULL) {
         printf("Fail: head_node should be NULL for empty query\n");
         return FAIL;
@@ -62,7 +61,7 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query,
 }
 
 
-// Helper function to run a single test case
+// Helper function to run a single test case (boilerplate code)
 int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, 
              char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
     int res = PASS;
