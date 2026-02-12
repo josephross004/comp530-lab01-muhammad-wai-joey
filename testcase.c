@@ -8,8 +8,7 @@
 // -----------------------------------
 
 
-int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, 
-                     char** e_keys, char** e_vals, int num_kv) {
+int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, char** e_keys, char** e_vals, int num_kv) {
     
     // missing fields must be empty strings, not NULL
     if (strcmp(rs->method, e_method) != 0) {
@@ -47,7 +46,6 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query,
     }
 
     // final Integrity Checks
-    // Per policy:  query is missing, head_node = NULL
     if (num_kv == 0 && rs->head_node != NULL) {
         printf("Fail: head_node should be NULL for empty query\n");
         return FAIL;
@@ -62,9 +60,8 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query,
 }
 
 
-// Helper function to run a single test case
-int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, 
-             char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
+// Helper function to run a single test case (boilerplate code)
+int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
     int res = PASS;
     char* req = (char*)calloc(CHUNK, sizeof(char));
     strncpy(req, req_str, CHUNK - 1);
@@ -374,26 +371,26 @@ fn_table_entry_t fn_table[] = {
     {"tc5", get5},
     // {"tc6", method1},
     // {"tc7", method2},
-    {"tc8", method3},
-    {"tc9", post1},
-    {"tc10", post2},
-    {"tc11", post3},
-    {"tc12", post4},
+    {"tc6", method3},
+    {"tc7", post1},
+    {"tc8", post2},
+    {"tc9", post3},
+    {"tc10", post4},
     // {"tc13", post5},
-    {"tc14", url1},
-    {"tc15", url2},
-    {"tc16", url3},
-    {"tc17", url4},
-    {"tc18", kv1},
-    {"tc19", kv2},
-    {"tc20", kv3},
-    {"tc21", kv4},
-    {"tc22", kv5},
-    {"tc23", kv6},
-    {"tc24", kv7},
-    {"tc25", kv8},
-    {"tc26", kv9},
-    {"tc27", kv10},
+    {"tc11", url1},
+    {"tc12", url2},
+    {"tc13", url3},
+    {"tc14", url4},
+    {"tc15", kv1},
+    {"tc16", kv2},
+    {"tc17", kv3},
+    {"tc18", kv4},
+    {"tc19", kv5},
+    {"tc20", kv6},
+    {"tc21", kv7},
+    {"tc22", kv8},
+    {"tc23", kv9},
+    {"tc24", kv10},
     {NULL, NULL} // mark the end
 };
 
