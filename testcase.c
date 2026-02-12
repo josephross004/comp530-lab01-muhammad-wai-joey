@@ -59,10 +59,29 @@ int validate_request(char* e_method, char* e_url, char* e_path, char* e_query, c
     return PASS;
 }
 
+int validate_json(char* e_json){
+    char* json_str = (char*)malloc( CHUNK*4 );
+
+    int size = create_json( json_str );
+
+    if (strcmp(json_str, e_json) != 0) {
+        printf("Fail: JSON string mismatch. Expected %s, got %s\n", e_json, json_str);
+        free(json_str);
+        return FAIL;
+    }else if (strlen(e_json) != size){
+        printf("Fail: JSON size mismatch. Expected %ld, got %d from create_json()\n", strlen(e_json), size);
+        free(json_str);
+        return FAIL;
+    }
+
+    free(json_str);
+    return PASS;
+}
 
 // Helper function to run a single test case (boilerplate code)
-int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv) {
+int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, char* e_path, char* e_qry, char** e_keys, char** e_vals, int num_kv, char* e_json) {
     int res = PASS;
+    int json_res = PASS;
     char* req = (char*)calloc(CHUNK, sizeof(char));
     strncpy(req, req_str, CHUNK - 1);
 
@@ -77,12 +96,13 @@ int run_test(char* req_str, int exp_status, char* e_meth, char* e_url, char* e_p
     // deep Validation (Only if the request was successful)
     else if (actual_status == PASS) {
         res = validate_request(e_meth, e_url, e_path, e_qry, e_keys, e_vals, num_kv);
+        json_res = validate_json(e_json);
     }
 
     // cleanup
     unallocate_request();
     free(req);
-    return res;
+    return res + json_res;
 }
 // End helper function definitions
 
@@ -111,11 +131,12 @@ I. Basic GET Requests.
 */
 
 int get1() {
-    char* keys[] = {"user", "mode"};
-    char* vals[] = {"brent", "debug"};
+    char* keys[] = {"user"};
+    char* vals[] = {"brent"};
     return run_test("GET /endpoint?user=brent HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent", "/endpoint", 
-                    "user=brent", keys, vals, 1);
+                    "user=brent", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent\",\"path\":\"/endpoint\",\"user\":\"brent\"}");
 }
 
 int get2() {
@@ -124,25 +145,29 @@ int get2() {
 
     return run_test("GET /endpoint?user=brent&mode=debug&test=rizz HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent&mode=debug&test=rizz", "/endpoint", 
-                    "user=brent&mode=debug&test=rizz", keys, vals, 3);
+                    "user=brent&mode=debug&test=rizz", keys, vals, 3, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent&mode=debug&test=rizz\",\"path\":\"/endpoint\",\"user\":\"brent\",\"mode\":\"debug\",\"test\":\"rizz\"}");
 }
 
 int get3() {
     return run_test("GET /endpoint HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "/endpoint", "/endpoint", "", NULL, NULL, 0);
+                    PASS, "GET", "/endpoint", "/endpoint", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint\",\"path\":\"/endpoint\"}");
 }
 
 int get4() {
     return run_test("GET /endpoint? HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "/endpoint?", "/endpoint", "", NULL, NULL, 0);
+                    PASS, "GET", "/endpoint?", "/endpoint", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?\",\"path\":\"/endpoint\"}");
 }
 
 int get5() {
     return run_test("GET  HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "", "", "", NULL, NULL, 0);
+                    PASS, "GET", "", "", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"\",\"path\":\"\"}");
 }
 
-/*II. Method Field
+/*II. Method Field - NOT doing 1 anymore because I don't think we have to do that
     1. Ensure method is uppercase in output ("get" -> GET, gEt -> GET, pOsT -> POST)
     2. Invald method names (in tc3 given "JOST") should FAIL. 
 */
@@ -172,7 +197,7 @@ int get5() {
 int method3() {
     // expect this to return FAIL (0) because "JOST" is invalid.
     // If it returns 0 then  PASS
-    return run_test("JOST /endpoin HTTP/1.1\r\n\r\n", FAIL, "", "", "", "", NULL, NULL, 0);
+    return run_test("JOST /endpoin HTTP/1.1\r\n\r\n", FAIL, "", "", "", "", NULL, NULL, 0, "");
 }
 
 
@@ -180,9 +205,9 @@ int method3() {
 /*III. Basic POST requests.
     1. POST with entity body containing one KV pair. 
     2. POST with multiple kv pairs.
-    3. POST where Content-Length matches body length.
+    3. POST where Content-Length matches body length but malformed query.
     4. POST where body has no parameters, which leads to empty quesry and NULL head_node. 
-    5. POST iwth missing body despite content-length
+    5. POST iwth missing body despite content-length - this is misleading to the server so we are not doing it anymore
     6. POSt with no Content-Length at all (is this a FAILing test?)*/
 
 int post1(){
@@ -191,7 +216,8 @@ int post1(){
 
     return run_test("POST /endpoint HTTP/1.1\r\nContent-Length: 10\r\n\r\nuser=brent\r\n\r\n", 
                     PASS, "POST", "/endpoint", "/endpoint", 
-                    "user=brent", keys, vals, 1);
+                    "user=brent", keys, vals, 1, 
+                    "{\"method\":\"POST\",\"url\":\"/endpoint\",\"path\":\"/endpoint\",\"user\":\"brent\"}");
 }
 
 int post2(){
@@ -200,21 +226,24 @@ int post2(){
 
     return run_test("POST /endpoint HTTP/1.1\r\nContent-Length: 31\r\n\r\nuser=brent&mode=debug&test=rizz\r\n\r\n", 
                     PASS, "POST", "/endpoint", "/endpoint", 
-                    "user=brent&mode=debug&test=rizz", keys, vals, 3);
+                    "user=brent&mode=debug&test=rizz", keys, vals, 3, 
+                    "{\"method\":\"POST\",\"url\":\"/endpoint\",\"path\":\"/endpoint\",\"user\":\"brent\",\"mode\":\"debug\",\"test\":\"rizz\"}");
 }
 
 int post3(){
-    char* keys[] = {"user", "mode", "test"};
-    char* vals[] = {"brent", "debug", "rizz"};
+    char* keys[] = {"user", "mode"};
+    char* vals[] = {"brent", "debug"};
 
-    return run_test("POST /endpoint HTTP/1.1\r\nContent-Length: 31\r\n\r\nuser=brent&mode=debug&test=rizz\r\n\r\n", 
+    return run_test("POST /endpoint HTTP/1.1\r\nContent-Length: 27\r\n\r\nuser=brent&mode=debug&test=\r\n\r\n", 
                     PASS, "POST", "/endpoint", "/endpoint", 
-                    "user=brent&mode=debug&test=rizz", keys, vals, 3);
+                    "user=brent&mode=debug&test=", keys, vals, 2, 
+                    "{\"method\":\"POST\",\"url\":\"/endpoint\",\"path\":\"/endpoint\",\"user\":\"brent\",\"mode\":\"debug\"}");
 }
 
 int post4(){
     return run_test("POST /endpoint HTTP/1.1\r\nContent-Length: 0\r\n\r\n\r\n", 
-                    PASS, "POST", "/endpoint", "/endpoint", "", NULL, NULL, 0);
+                    PASS, "POST", "/endpoint", "/endpoint", "", NULL, NULL, 0, 
+                    "{\"method\":\"POST\",\"url\":\"/endpoint\",\"path\":\"/endpoint\"}");
 }
 
 // int post5(){
@@ -224,9 +253,10 @@ int post4(){
 
 int post6(){
     // this test is hard to do since the grading policy / design policy doesn't say that missing content-length should fail. 
-    // we will assume that it should fail since we dont know how much of the body to read.
+    // we will assume that it should pass since we dont know how much of the body to read.
     return run_test("POST /endpoint HTTP/1.1\r\n\r\nuser=brent&mode=debug&test=rizz\r\n\r\n", 
-                    PASS, "", "", "", "", NULL, NULL, 0);
+                    PASS, "POST", "/endpoint", "/endpoint", "", NULL, NULL, 0, 
+                    "{\"method\":\"POST\",\"url\":\"/endpoint\",\"path\":\"/endpoint\"}");
 }
 /*IV. URL correctness
     Missing URL becomes empty string fields
@@ -238,17 +268,20 @@ int post6(){
 
 int url1(){
     return run_test("GET  HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "", "", "", NULL, NULL, 0);
+                    PASS, "GET", "", "", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"\",\"path\":\"\"}");
 }
 
 int url2(){
     return run_test("GET /endpoint/ HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "/endpoint/", "/endpoint/", "", NULL, NULL, 0);
+                    PASS, "GET", "/endpoint/", "/endpoint/", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint/\",\"path\":\"/endpoint/\"}");
 }
 
 int url3(){
     return run_test("GET /endpoint/// HTTP/1.1\r\n\r\n", 
-                    PASS, "GET", "/endpoint///", "/endpoint///", "", NULL, NULL, 0);
+                    PASS, "GET", "/endpoint///", "/endpoint///", "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint///\",\"path\":\"/endpoint///\"}");
 }
 
 int url4(){
@@ -257,7 +290,8 @@ int url4(){
 
     return run_test("GET /endpoint?user=brent HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent", "/endpoint", 
-                    "user=brent", keys, vals, 1);
+                    "user=brent", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent\",\"path\":\"/endpoint\",\"user\":\"brent\"}");
 }
 /*V. KV pairs. Valid kv pairs. Malformed pairs must not create nodes. 
     1. Create test for something like `user=brent&mode=debug` and check order. 
@@ -269,11 +303,7 @@ int url4(){
     7. user=brent&incomplete= should skip since the last pair is missing a value. 
     8. query starts with &
     9. query ends with &
-    10. empty string entirely 
-    11. Node order is preserved in the linked list
-    12. Each node has correct KV values
-    13. Next pointer is correct 
-    14. Tail node's NEXT is NULL*/
+    10. empty string entirely*/
 
 int kv1(){
     char* keys[] = {"user", "mode", "test"};
@@ -281,19 +311,22 @@ int kv1(){
 
     return run_test("GET /endpoint?user=brent&mode=debug&test=rizz HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent&mode=debug&test=rizz", "/endpoint", 
-                    "user=brent&mode=debug&test=rizz", keys, vals, 3);
+                    "user=brent&mode=debug&test=rizz", keys, vals, 3, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent&mode=debug&test=rizz\",\"path\":\"/endpoint\",\"user\":\"brent\",\"mode\":\"debug\",\"test\":\"rizz\"}");
 }
 
 int kv2(){
     return run_test("GET /endpoint?key= HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?key=", "/endpoint", 
-                    "key=", NULL, NULL, 0);
+                    "key=", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?key=\",\"path\":\"/endpoint\"}");
 }
 
 int kv3(){
     return run_test("GET /endpoint?=value HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?=value", "/endpoint", 
-                    "=value", NULL, NULL, 0);
+                    "=value", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?=value\",\"path\":\"/endpoint\"}");
 }
 
 int kv4(){
@@ -302,7 +335,8 @@ int kv4(){
 
     return run_test("GET /endpoint?&mode=debug HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?&mode=debug", "/endpoint", 
-                    "&mode=debug", keys, vals, 1);
+                    "&mode=debug", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?&mode=debug\",\"path\":\"/endpoint\",\"mode\":\"debug\"}");
 }
 
 int kv5(){
@@ -311,7 +345,8 @@ int kv5(){
 
     return run_test("GET /endpoint?user=brent&&mode=debug HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent&&mode=debug", "/endpoint", 
-                    "user=brent&&mode=debug", keys, vals, 2);
+                    "user=brent&&mode=debug", keys, vals, 2, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent&&mode=debug\",\"path\":\"/endpoint\",\"user\":\"brent\",\"mode\":\"debug\"}");
 }
 
 int kv6(){
@@ -320,7 +355,8 @@ int kv6(){
 
     return run_test("GET /endpoint?user&mode=debug HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user&mode=debug", "/endpoint", 
-                    "user&mode=debug", keys, vals, 1);
+                    "user&mode=debug", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user&mode=debug\",\"path\":\"/endpoint\",\"mode\":\"debug\"}");
 }
 
 int kv7(){
@@ -329,7 +365,8 @@ int kv7(){
 
     return run_test("GET /endpoint?user=brent&incomplete= HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent&incomplete=", "/endpoint", 
-                    "user=brent&incomplete=", keys, vals, 1);
+                    "user=brent&incomplete=", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent&incomplete=\",\"path\":\"/endpoint\",\"user\":\"brent\"}");
 }
 
 int kv8(){
@@ -338,7 +375,8 @@ int kv8(){
 
     return run_test("GET /endpoint?&mode=debug HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?&mode=debug", "/endpoint", 
-                    "&mode=debug", keys, vals, 1);
+                    "&mode=debug", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?&mode=debug\",\"path\":\"/endpoint\",\"mode\":\"debug\"}");
 }
 
 int kv9(){
@@ -347,13 +385,15 @@ int kv9(){
 
     return run_test("GET /endpoint?user=brent& HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?user=brent&", "/endpoint", 
-                    "user=brent&", keys, vals, 1);
+                    "user=brent&", keys, vals, 1, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?user=brent&\",\"path\":\"/endpoint\",\"user\":\"brent\"}");
 }
 
 int kv10(){
     return run_test("GET /endpoint? HTTP/1.1\r\n\r\n", 
                     PASS, "GET", "/endpoint?", "/endpoint", 
-                    "", NULL, NULL, 0);
+                    "", NULL, NULL, 0, 
+                    "{\"method\":\"GET\",\"url\":\"/endpoint?\",\"path\":\"/endpoint\"}");
 }
 // End test case function definitions
 
@@ -391,6 +431,7 @@ fn_table_entry_t fn_table[] = {
     {"tc22", kv8},
     {"tc23", kv9},
     {"tc24", kv10},
+    {"tc25", post6}, // we forgot this one before
     {NULL, NULL} // mark the end
 };
 
