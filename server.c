@@ -216,7 +216,6 @@ void sig_child_handler( int signal_type ) {
 //
 int run_server( unsigned int port_number ) {
 
-
   int client_socket_fd = NONE;
 
   struct sockaddr_in client_address;
@@ -252,7 +251,9 @@ int run_server( unsigned int port_number ) {
           return OK;
       } else {
           printf("Parent process: PID: %d, child PID: %d\n", getpid(), pid);
-          close(client_socket_fd);
+          close(client_socket_fd); 
+          // parent shouldn't leave any open connections. wouldn't matter for this assignment
+          // but good practice, considering what we have been talking about in lecture with IPC
       }
     }
   }
@@ -374,11 +375,6 @@ int create_request( char* http_request ) {
 
   //printf("skipped version\n");
 
-  if (rs->query == NULL){
-    //printf("no query\n");
-    rs->query = (char*)malloc((1) * sizeof(char));
-    strcpy(rs->query, "");
-  }
 
   // headers and body
   counter = 0;
@@ -441,13 +437,19 @@ int create_request( char* http_request ) {
     char* temp = (char*)realloc(rs->query, (contentLength + 1) * sizeof(char));
     // have to play it safe in case the machine runs out of memory. 
     if (temp == NULL){
-      printf("Failed to reallocate memory\n");
+      fprintf(stderr, "Failed to reallocate memory\n");
     } else {
       rs->query = temp;
     }
 
     strncpy(rs->query, http_request, counter);
     rs->query[counter] = 0;
+  }
+
+  if (rs->query == NULL){
+    //printf("no query\n");
+    rs->query = (char*)malloc((1) * sizeof(char));
+    strcpy(rs->query, "");
   }
 
   // handle queries and linked list
@@ -504,14 +506,14 @@ int create_request( char* http_request ) {
   //printf("url: %s\n", rs->url);
   //printf("path: %s\n", rs->path);
   //printf("query: %s\n", rs->query);
-  kv_pair_t* curr = rs->head_node;
-  counter = 0;
-  while (curr != NULL){
-    //printf("node: %d\n", counter++);
-    //printf("key: %s\n", curr->key);
-    //printf("value: %s\n", curr->value);
-    curr = curr->next_node;
-  }
+  // kv_pair_t* curr = rs->head_node;
+  // counter = 0;
+  // while (curr != NULL){
+  //   //printf("node: %d\n", counter++);
+  //   //printf("key: %s\n", curr->key);
+  //   //printf("value: %s\n", curr->value);
+  //   curr = curr->next_node;
+  // }
   
   return OK; // just a place holder
 } // end create_request() function
