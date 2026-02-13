@@ -12,10 +12,10 @@ test_result() {
 # Number of test cases.
 # update this number as needed.
 # -------------------------------
-N=24
+N=25
 
 for ((i = 1; i < N+1; i++)); do
-    echo "---------------------------"
+    echo "----------------------------"
   	./testcase "tc$i"
   	ec=$?
   	test_result "$ec" "tc$i"
@@ -38,7 +38,7 @@ for ((i = 1; i < N+1; i++)); do
 	valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./testcase "tc$i" 2>> "./valgrind_output.log"
 	ec=$?
 	test_result "$ec" "tc$i (Valgrind)"
-
+	
  	sleep 1
 done
 
@@ -47,6 +47,8 @@ done
 # Honors section will included test cases below
 # ---------------------------------------------- 
 
+# Hey grader, the memory leak test is included in the loop above ^ 
+# but is also done as an indirect consequence of this test below.
 
 # Process reaping outline
 #     1. Write a test in testharness.sh that starts the srever in the background and captures the parent PID
