@@ -437,7 +437,7 @@ int create_request( char* http_request ) {
     char* temp = (char*)realloc(rs->query, (contentLength + 1) * sizeof(char));
     // have to play it safe in case the machine runs out of memory. 
     if (temp == NULL){
-      fprintf(stderr, "Failed to reallocate memory\n");
+      printf("Failed to reallocate memory for query\n");
     } else {
       rs->query = temp;
     }
